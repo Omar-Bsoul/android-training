@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Ola App </string>
+
+    <string-array name="countries">
+        <item>Country</item>
+        <item>Jorjia</item>
+        <item>Jordan</item>
+        <item>Jarash</item>
+        <item>Jorvv</item>
+        <item>Jvvv</item>
+        <item>Jovv</item>
+        <item>Jaravo</item>
+    </string-array>
+</resources>
