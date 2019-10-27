@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.myapplication.models.Model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,9 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static class RVAdapter extends RecyclerView.Adapter<MyViewHolder> {
         private List<Model> models;
+        private WeakReference<MainActivity> reference;
 
         RVAdapter() {
             models = new ArrayList<>();
+        }
+
+        RVAdapter(MainActivity activity){
+            reference = new WeakReference<>(activity);
         }
 
         public void setModels(List<Model> models) {

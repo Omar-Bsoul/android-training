@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -20,6 +21,9 @@ import com.google.android.material.textfield.TextInputLayout;
 public class MyDialog extends DialogFragment {
     public static final String FULLNAME_KEY = "FULLNAME_KEY";
 
+    private OnNameCompletedListener listener;
+    private int requestCode;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -34,13 +38,18 @@ public class MyDialog extends DialogFragment {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fullName = String.format("Hello %s %s",
-                        firstTextInput.getEditText().getText().toString().trim(),
-                        lastTextInput.getEditText().getText().toString().trim());
+                String first = firstTextInput.getEditText().getText().toString().trim();
+                String last = lastTextInput.getEditText().getText().toString().trim();
 
-                Intent intent = new Intent();
-                intent.putExtra(FULLNAME_KEY, fullName);
-
+                if  (listener != null) {
+                    listener.onNameCompleted(first, last);
+                } else if (getParentFragment() != null) {
+                    Intent intent = new Intent();
+                    intent.putExtra(FULLNAME_KEY, first + " " + last);
+                    getParentFragment().onActivityResult(
+                            requestCode, Activity.RESULT_OK, intent
+                    );
+                }
                 dismiss();
             }
         });
@@ -48,6 +57,10 @@ public class MyDialog extends DialogFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getParentFragment() != null) {getParentFragment().onActivityResult(
+                            requestCode, Activity.RESULT_CANCELED, null
+                    );
+                }
                 dismiss();
             }
         });
@@ -57,4 +70,15 @@ public class MyDialog extends DialogFragment {
         return builder.create();
     }
 
+    public void setListener(OnNameCompletedListener listener) {
+        this.listener = listener;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
+    }
+
+    public interface OnNameCompletedListener {
+        void onNameCompleted(String first, String last);
+    }
 }
