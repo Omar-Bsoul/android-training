@@ -22,7 +22,6 @@ public class MyDialog extends DialogFragment {
     public static final String FULLNAME_KEY = "FULLNAME_KEY";
 
     private OnNameCompletedListener listener;
-    private int requestCode;
 
     @NonNull
     @Override
@@ -41,13 +40,13 @@ public class MyDialog extends DialogFragment {
                 String first = firstTextInput.getEditText().getText().toString().trim();
                 String last = lastTextInput.getEditText().getText().toString().trim();
 
-                if  (listener != null) {
+                if (listener != null) {
                     listener.onNameCompleted(first, last);
-                } else if (getParentFragment() != null) {
+                } else if (getTargetFragment() != null) {
                     Intent intent = new Intent();
                     intent.putExtra(FULLNAME_KEY, first + " " + last);
-                    getParentFragment().onActivityResult(
-                            requestCode, Activity.RESULT_OK, intent
+                    getTargetFragment().onActivityResult(
+                            getTargetRequestCode(), Activity.RESULT_OK, intent
                     );
                 }
                 dismiss();
@@ -57,8 +56,9 @@ public class MyDialog extends DialogFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getParentFragment() != null) {getParentFragment().onActivityResult(
-                            requestCode, Activity.RESULT_CANCELED, null
+                if (getTargetFragment() != null) {
+                    getTargetFragment().onActivityResult(
+                            getTargetRequestCode(), Activity.RESULT_CANCELED, null
                     );
                 }
                 dismiss();
@@ -72,10 +72,6 @@ public class MyDialog extends DialogFragment {
 
     public void setListener(OnNameCompletedListener listener) {
         this.listener = listener;
-    }
-
-    public void setRequestCode(int requestCode) {
-        this.requestCode = requestCode;
     }
 
     public interface OnNameCompletedListener {

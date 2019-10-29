@@ -42,9 +42,16 @@ public class MyFragment extends Fragment {
         showDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyDialog dialog = new MyDialog();
-                dialog.setRequestCode(NAME_REQUEST_CODE);
-                dialog.show(getChildFragmentManager(), null);
+                //MyDialog dialog = new MyDialog();
+                //dialog.setTargetFragment(MyFragment.this, NAME_REQUEST_CODE);
+                //dialog.show(getChildFragmentManager(), null);
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+                Intent intent = Intent.createChooser(sendIntent, null);
+                startActivity(intent);
             }
         });
     }
