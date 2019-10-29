@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.BaseAdapter;
 
 public class Splash extends AppCompatActivity  {
 
@@ -14,7 +12,7 @@ public class Splash extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        Intent inn = new Intent(Splash.this, FragmentsActivity.class);
+        Intent inn = new Intent(Splash.this, DateTimeActivity.class);
         startActivity(inn);
         finish();
     }
