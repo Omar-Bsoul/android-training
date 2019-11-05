@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.myapplication.fragments.MyModalFragment;
 import com.example.myapplication.models.Model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -53,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ActivityPages.class);
-                startActivity(intent);
+
             }
         });
 
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             models = new ArrayList<>();
         }
 
-        RVAdapter(MainActivity activity){
+        RVAdapter(MainActivity activity) {
             reference = new WeakReference<>(activity);
         }
 
@@ -116,17 +117,27 @@ public class MainActivity extends AppCompatActivity {
     private static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         TextView email;
+        ImageView more;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.textView_main_name);
             email = itemView.findViewById(R.id.textView_main_email);
+            more = itemView.findViewById(R.id.imageView_main_moreOptions);
         }
 
         public void bind(Model model) {
             name.setText(model.getName());
             email.setText(model.getEmail());
+
+            more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MyModalFragment myModalFragment = new MyModalFragment();
+                    myModalFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), null);
+                }
+            });
         }
     }
 }
