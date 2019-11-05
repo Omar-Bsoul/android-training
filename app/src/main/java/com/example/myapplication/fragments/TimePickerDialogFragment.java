@@ -1,33 +1,35 @@
 package com.example.myapplication.fragments;
 
-import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
-public class TimePickerDialogFragment extends TimePickerDialog {
+import java.util.Calendar;
 
-    private final OnTimeSetListener listener;
-    private final int hourOfDay;
-    private final int minute;
+public class TimePickerDialogFragment extends DialogFragment {
 
-    public TimePickerDialogFragment(Context context, OnTimeSetListener listener, int hourOfDay, int minute, boolean is24HourView) {
-        super(context, listener, hourOfDay, minute, is24HourView);
+    private final TimePickerDialog.OnTimeSetListener listener;
+
+    public TimePickerDialogFragment(TimePickerDialog.OnTimeSetListener listener) {
         this.listener = listener;
-        this.hourOfDay = hourOfDay;
-        this.minute = minute;
     }
 
+    @NonNull
     @Override
-    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-        super.onTimeChanged(view, hourOfDay, minute);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Calendar calendar = Calendar.getInstance();
 
-        if (listener != null) {
-            listener.onTimeSet(view, hourOfDay, minute);
-        }
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                requireContext(), listener,
+                calendar.get(Calendar.HOUR),
+                calendar.get(Calendar.MINUTE),
+                false
+        );
+
+        return timePickerDialog;
     }
 }

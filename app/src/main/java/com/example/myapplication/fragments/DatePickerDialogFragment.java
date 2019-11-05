@@ -1,39 +1,35 @@
 package com.example.myapplication.fragments;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class DatePickerDialogFragment extends DatePickerDialog {
+import java.util.Calendar;
 
-    private OnDateSetListener listener;
-    private int year;
-    private int month;
-    private int dayOfMonth;
+public class DatePickerDialogFragment extends DialogFragment {
 
-    public DatePickerDialogFragment(@NonNull Context context, @Nullable OnDateSetListener listener, int year, int month, int dayOfMonth) {
-        super(context, listener, year, month, dayOfMonth);
+    private final DatePickerDialog.OnDateSetListener listener;
 
+    public DatePickerDialogFragment(DatePickerDialog.OnDateSetListener listener) {
         this.listener = listener;
-        this.year = year;
-        this.month = month;
-        this.dayOfMonth = dayOfMonth;
     }
 
+    @NonNull
     @Override
-    public void onDateChanged(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
-        super.onDateChanged(view, year, month, dayOfMonth);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Calendar calendar = Calendar.getInstance();
 
-        if (listener != null) {
-            listener.onDateSet(view, year, month, dayOfMonth);
-        }
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(), listener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+        return datePickerDialog;
     }
 }
