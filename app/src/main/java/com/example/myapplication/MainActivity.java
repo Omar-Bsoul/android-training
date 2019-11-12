@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,9 @@ import android.widget.TextView;
 
 import com.example.myapplication.fragments.MyModalFragment;
 import com.example.myapplication.models.Model;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
@@ -24,30 +29,47 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private ImageView noItemsImageView;
+    private TextView noItemsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RVAdapter adapter = new RVAdapter();
+        final RVAdapter adapter = new RVAdapter();
         recyclerView = findViewById(R.id.recyclerView_main_items);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Model> models = new ArrayList<>();
-        models.add(new Model("Abcd1", "Abcd1@gmail.com"));
-        models.add(new Model("Abcd2", "Abcd2@gmail.com"));
-        models.add(new Model("Abcd3", "Abcd3@gmail.com"));
-        models.add(new Model("Abcd1", "Abcd1@gmail.com"));
-        models.add(new Model("Abcd2", "Abcd2@gmail.com"));
-        models.add(new Model("Abcd3", "Abcd3@gmail.com"));
-        models.add(new Model("Abcd1", "Abcd1@gmail.com"));
-        models.add(new Model("Abcd2", "Abcd2@gmail.com"));
-        models.add(new Model("Abcd3", "Abcd3@gmail.com"));
-        models.add(new Model("Abcd1", "Abcd1@gmail.com"));
-        models.add(new Model("Abcd2", "Abcd2@gmail.com"));
-        models.add(new Model("Abcd3", "Abcd3@gmail.com"));
+        noItemsImageView = findViewById(R.id.imageView1);
+        noItemsTextView = findViewById(R.id.textView1);
+
+        final List<Model> models = new ArrayList<>();
+
+        final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout1);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                models.add(new Model("Abcd1", "Abcd1@gmail.com"));
+                models.add(new Model("Abcd2", "Abcd2@gmail.com"));
+                models.add(new Model("Abcd3", "Abcd3@gmail.com"));
+
+                adapter.setModels(models);
+
+                if (noItemsImageView.getVisibility() == View.VISIBLE) {
+                    noItemsImageView.setVisibility(View.GONE);
+                    noItemsTextView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else if (models.size() == 0) {
+                    noItemsImageView.setVisibility(View.VISIBLE);
+                    noItemsTextView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         adapter.setModels(models);
 
@@ -68,12 +90,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
-                if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
-                    fab.hide();
-                } else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
-                    fab.show();
-                }
+                //if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
+                //    fab.hide();
+                //} else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
+                //    fab.show();
+                //}
             }
         });
     }
