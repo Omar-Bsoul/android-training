@@ -2,13 +2,20 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String SHARED_PREFS_NAME = "SHARED_PREFS_NAME";
     private RecyclerView recyclerView;
     private ImageView noItemsImageView;
     private TextView noItemsTextView;
+
+    private BottomSheetBehavior<CardView> bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +83,38 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setModels(models);
 
+        final CardView bottomSheet = findViewById(R.id.cardView1);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
         final FloatingActionButton fab = findViewById(R.id.floatingActionButton_main_next);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                SharedPreferences preferences = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("STATE", String.valueOf(state));
+                editor.apply();
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
 
             }
         });
+
+        //HideBottomViewOnScrollBehavior<FloatingActionButton> fabBehavior = ((HideBottomViewOnScrollBehavior<FloatingActionButton>) ((CoordinatorLayout.LayoutParams)fab.getLayoutParams()).getBehavior());
+        //fabBehavior. ()
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -90,11 +125,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                //if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
-                //    fab.hide();
-                //} else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
-                //    fab.show();
-                //}
+                if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
+                    fab.hide();
+                } else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
+                    fab.show();
+                }
             }
         });
     }
@@ -157,6 +192,18 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     MyModalFragment myModalFragment = new MyModalFragment();
                     myModalFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), null);
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(v.getContext(), App.NOTIFICATION_CHANNEL_1)
+                            .setSmallIcon(R.drawable.ic_person_outline_black_24dp)
+                            .setContentTitle("New Notification")
+                            .setContentText("This is my first notification!");
+
+                    NotificationManagerCompat.from(v.getContext()).notify(getAdapterPosition(), builder.build());
                 }
             });
         }
