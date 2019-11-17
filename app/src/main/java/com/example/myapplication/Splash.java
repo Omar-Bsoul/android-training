@@ -12,7 +12,7 @@ public class Splash extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        Intent intent = new Intent(Splash.this, MainActivity.class);
+        Intent intent = new Intent(Splash.this, FileEditorActivity.class);
         startActivity(intent);
         finish();
     }

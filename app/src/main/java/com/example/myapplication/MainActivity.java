@@ -36,6 +36,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String SHARED_PREFS_NAME = "SHARED_PREFS_NAME";
+    private static final String BOTTOM_SHEET_STATE_KEY = "BOTTOM_SHEET_STATE_KEY";
+
     private RecyclerView recyclerView;
     private ImageView noItemsImageView;
     private TextView noItemsTextView;
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
+        int state = preferences.getInt(BOTTOM_SHEET_STATE_KEY, BottomSheetBehavior.STATE_COLLAPSED);
 
         final RVAdapter adapter = new RVAdapter();
         recyclerView = findViewById(R.id.recyclerView_main_items);
@@ -85,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         final CardView bottomSheet = findViewById(R.id.cardView1);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(state);
 
         final FloatingActionButton fab = findViewById(R.id.floatingActionButton_main_next);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             public void onStateChanged(@NonNull View view, int state) {
                 SharedPreferences preferences = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("STATE", String.valueOf(state));
+                editor.putInt(BOTTOM_SHEET_STATE_KEY, state);
                 editor.apply();
             }
 
