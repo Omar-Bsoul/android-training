@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
@@ -43,15 +44,14 @@ public class FileEditorActivity extends AppCompatActivity {
                 String fileName = fileNameEditText.getEditText().getText().toString();
                 String fileContent = fileContentEditText.getEditText().getText().toString();
 
-                File externalFilesDir = getExternalFilesDir(null);
-                if (!externalFilesDir.exists()) {
-                    externalFilesDir.mkdirs();
-                }
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + fileName);
 
-                File file = new File(fileName);
+                //if (!file.exists()) {
+                //    file.mkdirs();
+                //}
+
                 try {
-                    OutputStream outputStream = openFileOutput(fileName, MODE_PRIVATE);
-                    //new FileOutputStream(file);
+                    OutputStream outputStream = new FileOutputStream(file);
                     OutputStreamWriter writer = new OutputStreamWriter(outputStream);
                     writer.write(fileContent);
 
@@ -67,10 +67,9 @@ public class FileEditorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String fileName = fileNameEditText.getEditText().getText().toString();
 
-                File file = new File(fileName);
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + fileName);
                 try {
-                    InputStream inputStream = openFileInput(fileName);
-                    //new FileInputStream(file);
+                    InputStream inputStream = new FileInputStream(file);
                     InputStreamReader reader = new InputStreamReader(inputStream);
 
                     StringBuilder builder = new StringBuilder();
