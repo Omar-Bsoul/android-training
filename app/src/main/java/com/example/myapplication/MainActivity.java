@@ -164,9 +164,6 @@ public class MainActivity extends AppCompatActivity {
             View row = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
             MyViewHolder holder = new MyViewHolder(row);
 
-            Bitmap bitmap = // Glide ...
-            holder.image.setBitmap(bitmap);
-
             return holder;
         }
 
