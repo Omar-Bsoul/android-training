@@ -16,6 +16,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,7 +162,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View row = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
-            return new MyViewHolder(row);
+            MyViewHolder holder = new MyViewHolder(row);
+
+            Bitmap bitmap = // Glide ...
+            holder.image.setBitmap(bitmap);
+
+            return holder;
         }
 
         @Override
